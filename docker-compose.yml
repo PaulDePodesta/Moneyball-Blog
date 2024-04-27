@@ -1,17 +1,31 @@
 services:
   backend:
-    build: ./App/backend
+    build: ./backend
     volumes:
-      - ./App/backend:/usr/src/app
-      - ./App/backend/node_modules:/usr/src/app/node_modules
-    working_dir: /usr/src/app
-    command: npm start
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - "3000:3000"
     depends_on:
       - db
+    environment:
+      - MONGO_URI=mongodb://db:27017/mydatabase
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8000:3000"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+      - /usr/src/app/.next
+
   db:
     image: mongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
     volumes:
       - mongo_data:/data/db
     ports:
@@ -19,4 +33,3 @@ services:
 
 volumes:
   mongo_data:
-
