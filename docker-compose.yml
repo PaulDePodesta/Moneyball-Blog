@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./App/backend
+    volumes:
+      - ./App/backend:/usr/src/app
+      - ./App/backend/node_modules:/usr/src/app/node_modules
+    working_dir: /usr/src/app
+    command: npm start
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+  db:
+    image: mongo
+    volumes:
+      - mongo_data:/data/db
+    ports:
+      - "27017:27017"
+
+volumes:
+  mongo_data:
+
